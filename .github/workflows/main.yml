@@ -5,7 +5,7 @@ on:
     branches:
       - 'main'
   workflow_dispatch:
-    
+
 
 jobs:
   docker:
@@ -24,13 +24,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        name: カレントディレクトリとファイル一覧の出力
+        run: |
+          pwd
+          ls
+      -
         name: Build and push
         uses: docker/build-push-action@v5
         with:
           push: true
           tags: densukest/kdi:latest
-          context: .
+          #context: .
           platforms: linux/amd64,linux/arm64
-          file: ./image/Dockerfile
-          
-          
+          file: image/Dockerfile
+
+
