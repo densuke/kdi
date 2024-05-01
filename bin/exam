@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# 問題番号を取得し、問題のテキストを画面に出した後プロンプトを出す
+# 受験生は指示に従った操作後exitで抜けてくるので、そこまでのログを取得し
+# 評価用コードを使って確認をする
+# 確認が取れれば、クリアを示すコードを出力する
+
+# 使い方
+# [-d DIR]: 問題の置いてあるディレクトリ(標準: /usr/local/lib/exams)
+# PROBLEM: 問題番号
+
+DIR=/usr/local/lib/exams
+# オプション-dおよび問題番号を取得する
+while getopts d: OPT
+do
+  case $OPT in
+    "d" ) DIR=$OPTARG ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+PROBLEM=$1
+if [ -z "$PROBLEM" ]; then
+  echo "問題番号が指定されていません"
+  exit 1
+fi
+
+# 問題番号が存在するかを確認する、該当するディレクトリが存在すればOK、無ければエラーで終了
+# なお問題番号は3桁の数字とし、1,2桁の場合は0埋めして3桁にする
+PDIR=`printf "${DIR}/%04d" $PROBLEM`
+if [ ! -d "${PDIR}" ]; then
+  echo "問題番号 $PROBLEM は存在しません"
+  exit 1
+fi
+
+# 問題のテキストを表示する
+# 問題のテキストは、各問題ディレクトリ(PDIR)中にproblem.txtとして置かれているものとする
+echo "--- 問題番号 $PROBLEM ---"
+cat ${PDIR}/problem.txt
+echo "-----------------------"
+
+# 問題の前にセットアップ項目があれば実行する
+# セットアップ項目はsetup.shとして置かれているものとする
+if [ -x "${PDIR}/setup.sh" ]; then
+  echo "(セットアップを実行中)"
+  ${PDIR}/setup.sh
+fi
+
+# 学生の回答はscriptコマンドのログで取得し、ログはファイル "${TMP}/.$$.script.log"に記録する
+# もしTMP変数が未定義であれば/tmpをつかう
+if [ -z "$TMP" ]; then
+  TMP=/tmp
+fi
+LOGFILE="${TMP}/.$$.script.log"
+
+
+# コマンドプロンプトを変更します
+# 1行目に問題番号および「終了はexitコマンド」と表示
+# 2行目に"$ "を表示する
+PS1="問$PROBLEM (終了はexit) $ "
+export PS1
+# scriptコマンドでログを取得してシェルを開く
+echo "問題終了後、exitで抜けてください"
+TERM=vt100 script -a ${LOGFILE} -q -c /bin/bash
+
+
+# 評価コマンドは、各問題ディレクトリ(PDIR)中にeval.shとして置かれているものとする
+# 評価コマンドにログファイルを引数として渡して評価する
+if [ -x "${PDIR}/eval.sh" ]; then
+  ${PDIR}/eval.sh ${LOGFILE}
+  if [ $? -eq 0 ]; then
+    echo "クリアです"
+  else
+    echo "不合格です"
+  fi
+else
+  echo "評価コマンドが見つかりません"
+fi
+
+# 後始末、LOGFILEを削除する
+rm -f ${LOGFILE}

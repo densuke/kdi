@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# 問題リポジトリ
+REPO=docker.io/densukest/kdi:latest
+
+# 引数は問題番号(3桁か4桁数字)、無い場合はヘルプを出す
+if [ $# -eq 0 ]; then
+  echo "使い方: $0 問題番号"
+  exit 1
+fi
+
+echo "問題システムのバージョンを確認中"
+podman image pull "${REPO}"
+echo "問題システムを起動します"
+podman run -it --rm "${REPO}" "$1"

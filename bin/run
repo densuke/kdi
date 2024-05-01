@@ -1,0 +1,58 @@
+#!/bin/bash
+CONFIG="${HOME}/.kdiconfig"
+
+load_config() {
+    if [ ! -f ${CONFIG} ]; then
+        echo '--- 設定ファイルが無いので作成します ---'
+        # 出席番号と名前を確認して、設定ファイル($CONFIG)に保存する
+        read -p '出席番号: ' number
+        read -p '名前: ' name
+        echo "出席番号: ${number} 名前: ${name}"
+        read -p '以上で登録します、よろしいですか？(y/n): ' yn
+        if [ ${yn} = 'y' ]; then
+            echo "NUMBER=${number}" > ${CONFIG}
+            echo "NAME=${name}" >> ${CONFIG}
+            echo '--- 設定ファイルを作成しました ---'
+        else
+            echo '--- 設定ファイルを作成しませんでした ---'
+            exit 1
+        fi
+    fi
+
+    source ${CONFIG}
+}
+
+load_config
+echo "出席番号: ${NUMBER} 名前: ${NAME}"
+
+# 引数を解析し、処理を分岐する
+# 引数は以下の通り
+#  -h --help: ヘルプ
+#  NUM: 問題番号
+
+if [ $# -eq 0 ]; then
+    echo '--- 引数がありません ---'
+    exit 1
+fi
+
+if [ $1 = '-h' -o $1 = '--help' ]; then
+    echo '--- ヘルプ ---'
+    echo '使い方: kdi.sh [問題番号]'
+    exit 0
+fi
+
+# 問題番号
+NUM=$1
+
+echo "問題番号: ${NUM}"
+echo "=== この先は問題番号 ${NUM} の実行となります、指示に従って操作してください ==="
+podman image pull docker.io/densukest/kdi:${NUM}
+if [ $? -ne 0 ]; then
+    echo '--- イメージの取得に失敗しました ---'
+    echo ' * 問題番号が間違っている'
+    echo ' * その番号の問題がまだ存在しない'
+    echo ' いずれかの可能性があります'
+    exit 1
+fi
+script podman run --rm -it --env-file ${CONFIG} densukest/kdi:${NUM}
+
