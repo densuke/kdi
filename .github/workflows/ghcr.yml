@@ -33,7 +33,7 @@ jobs:
           # latestタグも追加
           flavor: |
             latest=${{ github.ref == 'refs/heads/main' }}
-            platform=linux/amd64,linux/arm64
+            platforms=linux/amd64,linux/arm64
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Build and push Docker image
