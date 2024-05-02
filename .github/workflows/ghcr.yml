@@ -1,6 +1,9 @@
 name: イメージ作成とpush(to GHCR)
 
 on:
+  push:
+    branches:
+      - 'main'
   workflow_dispatch:
 
 env:
@@ -35,8 +38,10 @@ jobs:
         context: .
         file: image/Dockerfile
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        # 自動で振られるタグ以外に、latestも追加する
+        tags: ${{ steps.meta.outputs.tags }},latest
+        # tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         platforms: linux/amd64,linux/arm64
-  
+
 
