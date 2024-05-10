@@ -1,5 +1,5 @@
-IMAGE=densukest/kdi
-TAG=latest
+IMAGE=ghcr.io/densuke/densukest/kdi
+TAG=main
 
 all: build
 
