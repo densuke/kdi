@@ -8,3 +8,6 @@ build:
 	docker build -t $(IMAGE):$(TAG) -f image/Dockerfile .
 
 install: build $(DESTDIR)/kadai
+
+$(DESTDIR)/kadai: bin/kadai
+	sudo install -o root - root -m 0755 -v bin/kadai $(DESTDIR)/kadai
