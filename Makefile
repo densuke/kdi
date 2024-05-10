@@ -11,6 +11,12 @@ check_in_devcontainer:
 		exit 1; \
 	fi
 
+build: setup_builder
+	docker buildx build -t $(IMAGE):$(TAG) -f image/Dockerfile --load .
+setup_builder:
+	if ! docker buildx ls --format '{{.Name}}' | sort -u | grep -q kdi; then \
+		docker buildx create --use --platform=linux/amd64,linux/arm64 --name=kdi; \
+	fi
 #push: check_in_devcontainer build
 #	docker buildx build --platform linux/amd64,linux/arm64 -t $(IMAGE):$(TAG) --push -f image/#Dockerfile .
 install: build $(DESTDIR)/kadai
