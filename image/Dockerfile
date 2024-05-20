@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     tzdata \
     locales \
     bash-completion \
+    tree \
     binutils && \
     rm -fr /var/lib/apt/lists /var/cache/apt
 # USER_NAMEのユーザーがsudoをパスワード無しで実行できるようにしておく
