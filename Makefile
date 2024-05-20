@@ -1,4 +1,4 @@
-IMAGE=ghcr.io/densuke/densukest/kdi
+IMAGE=ghcr.io/densuke/kdi
 TAG=main
 DESTDIR=/usr/local/bin
 
@@ -13,6 +13,9 @@ check_in_devcontainer:
 
 build: setup_builder
 	docker buildx build -t $(IMAGE):$(TAG) -f image/Dockerfile --load .
+
+test: build
+	docker run --rm -it --pull=never $(IMAGE):$(TAG) $(NUM)
 
 clean:
 	docker image rm $(IMAGE):$(TAG)
