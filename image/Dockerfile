@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     locales \
     bash-completion \
     tree \
+    whois \
     binutils && \
     rm -fr /var/lib/apt/lists /var/cache/apt
 # USER_NAMEのユーザーがsudoをパスワード無しで実行できるようにしておく
@@ -29,7 +30,7 @@ ENV LC_ALL=ja_JP.UTF-8
 #RUN apt-get install -y binutils markdown
 COPY ./bin/exam /usr/local/bin/exam
 COPY ./exams /usr/local/lib/exams
-RUN chmod +x /usr/local/bin/exam
+RUN chmod +x /usr/local/bin/exam;  cd "/usr/local/lib/exams/"; ls -d [0-9]*
 RUN find /usr/local/lib/exams -type f -iname "*.sh" -exec chmod -v +x {} \;
 COPY ./bin/answer /usr/local/bin/answer
 RUN chmod +x /usr/local/bin/answer
