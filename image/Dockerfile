@@ -35,6 +35,7 @@ RUN find /usr/local/lib/exams -type f -iname "*.sh" -exec chmod -v +x {} \;
 COPY ./bin/answer /usr/local/bin/answer
 RUN chmod +x /usr/local/bin/answer
 RUN rm -vf /home/ubuntu/.sudo_as_admin_successful
+RUN chown -R ubuntu:ubuntu /home/ubuntu
 WORKDIR /home/$USER_NAME
 USER $USER_NAME
 ENTRYPOINT ["exam"]
