@@ -31,7 +31,7 @@ add_max 1
 find -name "data1" -a -size 0 | grep -q 'work/fuga/hoge/data1' && add_score 1 && echo "OK"
 echo "=== ファイル(data2)存在チェック"
 add_max 1
-find -name "data1" -a -size 0 | grep -q 'work/foo/data2' && add_score 1 && echo "OK"
+find -name "data2" -a -size 0 | grep -q 'work/foo/data2' && add_score 1 && echo "OK"
 
 # ======================== ↑ 記述部ここまで
 
