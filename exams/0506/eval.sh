@@ -30,6 +30,11 @@ echo "=== ホームディレクトリ中のファイルのうち、wを含むフ
 add_max 1
 [ $(find ~ -name "*w*" -type f -maxdepth 1 2>/dev/null | wc -l) = 0 ] && add_score 1 && echo "OK"
 
+echo "=== 消しすぎてませんか?"
+if [ $(find ~ \! -name "*w*" -a -type f -maxdepth 1 2>/dev/null | fgrep -v '/.' | wc -l ) -eq 0 ] ; then
+    echo "消しすぎですね(加点取り消し)"
+    add_score -1
+fi
 # ======================== ↑ 記述部ここまで
 
 # スコアの表示および戻り値の作成・終了
