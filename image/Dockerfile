@@ -9,6 +9,9 @@ RUN apt-get update && apt-get install -y \
     bash-completion \
     tree \
     whois \
+    vim \
+    sl \
+    cowsay \
     binutils && \
     rm -fr /var/lib/apt/lists /var/cache/apt
 # USER_NAMEのユーザーがsudoをパスワード無しで実行できるようにしておく
@@ -24,6 +27,7 @@ RUN locale-gen ja_JP.UTF-8
 ENV LANG=ja_JP.UTF-8
 ENV LANGUAGE=ja_JP:ja
 ENV LC_ALL=ja_JP.UTF-8
+ENV PATH=$PATH:/usr/games
 # bashの補完機能パッケージをインストールする
 #RUN apt-get install -y bash-completion
 # binutilsをインストールする(strings)
@@ -36,6 +40,9 @@ COPY ./bin/answer /usr/local/bin/answer
 RUN chmod +x /usr/local/bin/answer
 RUN rm -vf /home/ubuntu/.sudo_as_admin_successful
 RUN chown -R ubuntu:ubuntu /home/ubuntu
+# vimrc.tarを/etc以下に展開する
+ADD image/vimrc.tar.gz /etc/
+RUN cd /etc/vim; rm -f vim.tiny; ln -s vimrc vim.tiny
 WORKDIR /home/$USER_NAME
 USER $USER_NAME
 ENTRYPOINT ["exam"]
