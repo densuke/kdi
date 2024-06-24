@@ -3,10 +3,10 @@
 # このプロセスをkillするには、kill -9 で強制終了するしかない。
 trap '' 1 2 3 15
 
-$0="zombie"
 
 X="1234567890"
 while true; do
   X=$X$X
+  sleep 0.5
 done
 
