@@ -15,7 +15,7 @@ build: setup_builder
 	docker buildx build -t $(IMAGE):$(TAG) -f image/Dockerfile --load .
 
 test: build
-	docker run --rm -it --pull=never $(IMAGE):$(TAG) $(NUM)
+	docker run --rm -it --pull=never -e TEST_USER=$(USER) $(IMAGE):$(TAG) $(NUM)
 
 clean:
 	docker image rm $(IMAGE):$(TAG)
