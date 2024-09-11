@@ -10,6 +10,14 @@
 # PROBLEM: 問題番号
 
 DIR=/usr/local/lib/exams
+
+# テスト用: もし環境変数TEST_USERが存在したら、その値をファイル$KNAMEに保存する
+if [ -n "$TEST_USER" ]; then
+  echo "テストモード: $TEST_USER"
+  mkdir -p $(dirname $KNAME)
+  echo $TEST_USER > $KNAME
+fi
+
 # オプション-dおよび問題番号を取得する
 while getopts d: OPT
 do
