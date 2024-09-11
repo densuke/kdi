@@ -9,6 +9,9 @@
 # [-d DIR]: 問題の置いてあるディレクトリ(標準: /usr/local/lib/exams)
 # PROBLEM: 問題番号
 
+# WEBHOOK="https://script.google.com/macros/s/AKfycbxdHb0X21IVVVFivYTinOEqX_qt_H5wDXtqxANY2t-fgfypiL5XdPrwnmlOfbnosyLN/exec"
+WEBHOOK="https://script.google.com/macros/s/AKfycbz4jUXhX0eAphJNzc9MS3Q5S1LJl5kaJNw92WOSkq4juEC1rNmNT7UX2dhTtghE_QCB/exec"
+KNAME="$HOME/.kdi/user"
 DIR=/usr/local/lib/exams
 
 # テスト用: もし環境変数TEST_USERが存在したら、その値をファイル$KNAMEに保存する
@@ -80,6 +83,27 @@ if [ -x "${PDIR}/eval.sh" ]; then
   else
     echo "不合格です"
   fi
+
+if [ -f /tmp/.result ]; then
+  score="$(cat /tmp/.result)"
+
+  JSON=$(cat <<EOM
+{
+  "timestamp": "$(date +%s)",
+  "user": "$(cat $KNAME)",
+  "examId": "$PROBLEM",
+  "score": "$score"
+}
+EOM
+)
+  echo "sending"
+  set -x
+  curl -sL -X POST -H "Content-Type: application/json" \
+    -d "$JSON" "$WEBHOOK" # > /dev/null
+  set +x
+fi
+
+
 else
   echo "評価コマンドが見つかりません"
 fi
