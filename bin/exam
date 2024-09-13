@@ -78,11 +78,11 @@ if [ -x "${PDIR}/eval.sh" ]; then
 
 if [ -f /tmp/.result ]; then
   score="$(cat /tmp/.result)"
-  cp -v  /tmp/.result /out/result.$(date +%s)
+  sudo cp -v  /tmp/.result /out/result.$(date +%s)
   JSON=$(cat <<EOM
 {
   "timestamp": "$(date +%s)",
-  "user": "$(cat $KNAME)",
+  "user": "${USEID}",
   "examId": "$PROBLEM",
   "score": "$score"
 }

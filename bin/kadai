@@ -70,4 +70,4 @@ exit 0
 fi
 
 echo "問題システムを起動します"
-podman run -it -v $HOME/.kdi/data:/out --rm "${REPO}" "$1"
+podman run -it -v $HOME/.kdi/data:/out -e USERID=$(cat $KNAME) --rm "${REPO}" "$1"
