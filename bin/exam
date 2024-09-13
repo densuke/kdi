@@ -10,7 +10,7 @@
 # PROBLEM: 問題番号
 
 # WEBHOOK="https://script.google.com/macros/s/AKfycbxdHb0X21IVVVFivYTinOEqX_qt_H5wDXtqxANY2t-fgfypiL5XdPrwnmlOfbnosyLN/exec"
-WEBHOOK="https://script.google.com/macros/s/AKfycbz4jUXhX0eAphJNzc9MS3Q5S1LJl5kaJNw92WOSkq4juEC1rNmNT7UX2dhTtghE_QCB/exec"
+WEBHOOK="https://script.google.com/macros/s/AKfycbzwzNywP-kA7W_1Vw_xXEj-MMgP09DI3AZ3Sasoo287HjeDK0gipDxq57wHSWegD0gX/exec"
 KNAME="$HOME/.kdi/user"
 DIR=/usr/local/lib/exams
 
@@ -86,7 +86,7 @@ if [ -x "${PDIR}/eval.sh" ]; then
 
 if [ -f /tmp/.result ]; then
   score="$(cat /tmp/.result)"
-
+  cp -v  /tmp/.result /out/result.$(date +%s)
   JSON=$(cat <<EOM
 {
   "timestamp": "$(date +%s)",
@@ -95,12 +95,16 @@ if [ -f /tmp/.result ]; then
   "score": "$score"
 }
 EOM
+
+
 )
-  echo "sending"
-  set -x
+send () {
   curl -sL -X POST -H "Content-Type: application/json" \
-    -d "$JSON" "$WEBHOOK" # > /dev/null
-  set +x
+    -d "$JSON" "$WEBHOOK" >& /dev/null
+}
+
+  echo "logging"
+  send || (sleep 1; send) || (sleep 2; send)
 fi
 
 

@@ -1,14 +1,17 @@
 #!/bin/bash
 
-KNAME=".kdi/user"
+KNAME="$HOME/.kdi/user"
 
 # 問題リポジトリ
 REPO=ghcr.io/densuke/kdi:main
 
-# 引数は問題番号(3桁か4桁数字)、無い場合はヘルプを出す
+# 引数は問題番号(数字)、無い場合はヘルプを出す
 if [ $# -eq 0 ]; then
-  echo "使い方: $0 <問題番号|update>"
+  echo "使い方: $0 <問題番号|update|arc>"
   echo "  update: 問題システムを更新します"
+  echo "  arc: 提出用アーカイブを作成します(試験用)"
+  echo "  clean: ローカルの課題状況をリセットします、すごく危険"
+
   exit 1
 fi
 
@@ -24,6 +27,7 @@ if [ ! -f $KNAME ]; then
   # 入力された出席番号をファイル$KNAMEに保存する
   echo $KDI > $KNAME
   echo "セーブしました"
+  mkdir -p $(dirname $KNAME)/data
 fi
 
 # updateの場合は問題システムを更新する
@@ -33,5 +37,37 @@ if [ "$1" = "update" ]; then
   exit $?
 fi
 
+if [ "$1" = "arc" ]; then
+  echo "提出データをアーカイブしています"
+  FILENAME="2401-$(cat $KNAME)-$(date +%s).tar.gz"
+  tar cvzf ${FILENAME} -C $(dirname $KNAME)/data .
+  cat <<EOM
+アーカイブを作成しました。
+ファイル名は ${FILENAME} となっています。
+Linux環境からホスト(Windows)側にファイル転送した後、
+Classroomの提出フォームにて提出を行ってください。
+提出は何回行ってもかまいません(最後の提出が有効です)。
+EOM
+exit 0
+fi
+
+if [ "$1" = "clean" ]; then
+  cat <<EOM
+課題(試験)のログをリセットします。
+未提出の記録がある場合、評価が無くなってしまいます!
+本当にやるならYESと打ち込んでください。
+(それ以外の入力およびCtrl-Cでキャンセル)
+EOM
+
+read -p "> " yn
+if [ "x$yn" = "xYES" ]; then
+  echo "リセット中"
+  rm -fr $(dirname $KNAME)/data
+  mkdir -p $(dirname $KNAME)/data
+  echo "完了"
+fi
+exit 0
+fi
+
 echo "問題システムを起動します"
-podman run -it --rm "${REPO}" "$1"
+podman run -it -v $HOME/.kdi/data:/out --rm "${REPO}" "$1"
