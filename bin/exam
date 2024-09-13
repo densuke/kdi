@@ -84,13 +84,19 @@ if [ -x "${PDIR}/eval.sh" ]; then
     echo "不合格です"
   fi
 
+
 if [ -f /tmp/.result ]; then
   score="$(cat /tmp/.result)"
-  cp -v  /tmp/.result /out/result.$(date +%s)
+  IFS=',' read -r -a v <<< "$score"
+  total=0
+  for value in "${v[@]}"; do
+    total=$((total + value))
+  done
+  echo "${USERID},${PROBLEM},${total},${score}" | sudo tee /out/result.$(date +%s) >/dev/null
   JSON=$(cat <<EOM
 {
   "timestamp": "$(date +%s)",
-  "user": "$(cat $KNAME)",
+  "user": "${USERID}",
   "examId": "$PROBLEM",
   "score": "$score"
 }
