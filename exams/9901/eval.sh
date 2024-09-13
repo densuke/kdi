@@ -48,7 +48,7 @@ fi
 echo "=== 設問2"
 # 設問2で指定したファイルの中身がOKであること
 add_max 1
-if [ $(cat ${EX2_FILE}) = "$EX2_TEXT" ]; then
+if [ "x$(cat ${EX2_FILE})" = "x$EX2_TEXT" ]; then
     add_score 1
     echo "OK"
 else
