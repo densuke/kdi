@@ -82,7 +82,7 @@ if [ -f /tmp/.result ]; then
   JSON=$(cat <<EOM
 {
   "timestamp": "$(date +%s)",
-  "user": "${USEID}",
+  "user": "${USERID}",
   "examId": "$PROBLEM",
   "score": "$score"
 }
