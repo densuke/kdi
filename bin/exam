@@ -9,6 +9,9 @@
 # [-d DIR]: 問題の置いてあるディレクトリ(標準: /usr/local/lib/exams)
 # PROBLEM: 問題番号
 
+# WEBHOOK="https://script.google.com/macros/s/AKfycbxdHb0X21IVVVFivYTinOEqX_qt_H5wDXtqxANY2t-fgfypiL5XdPrwnmlOfbnosyLN/exec"
+WEBHOOK="https://script.google.com/macros/s/AKfycbzwzNywP-kA7W_1Vw_xXEj-MMgP09DI3AZ3Sasoo287HjeDK0gipDxq57wHSWegD0gX/exec"
+KNAME="$HOME/.kdi/user"
 DIR=/usr/local/lib/exams
 # オプション-dおよび問題番号を取得する
 while getopts d: OPT
@@ -72,6 +75,31 @@ if [ -x "${PDIR}/eval.sh" ]; then
   else
     echo "不合格です"
   fi
+
+if [ -f /tmp/.result ]; then
+  score="$(cat /tmp/.result)"
+  cp -v  /tmp/.result /out/result.$(date +%s)
+  JSON=$(cat <<EOM
+{
+  "timestamp": "$(date +%s)",
+  "user": "$(cat $KNAME)",
+  "examId": "$PROBLEM",
+  "score": "$score"
+}
+EOM
+
+
+)
+send () {
+  curl -sL -X POST -H "Content-Type: application/json" \
+    -d "$JSON" "$WEBHOOK" >& /dev/null
+}
+
+  echo "logging"
+  send || (sleep 1; send) || (sleep 2; send)
+fi
+
+
 else
   echo "評価コマンドが見つかりません"
 fi
