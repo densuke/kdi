@@ -78,7 +78,7 @@ if [ -x "${PDIR}/eval.sh" ]; then
 
 if [ -f /tmp/.result ]; then
   score="$(cat /tmp/.result)"
-  sudo cp -v  /tmp/.result /out/result.$(date +%s)
+  echo "${USERID},${PROBLEM},${score}" | sudo tee /out/result.$(date +%s) >/dev/null
   JSON=$(cat <<EOM
 {
   "timestamp": "$(date +%s)",
