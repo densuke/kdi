@@ -33,10 +33,6 @@ add_score(){
 
 # ======================== 以下が記述部です
 
-# 引数にわたされたファイル中に、変数 SIZE の値が行頭から含まれているかを確認する
-# 含まれていれば成功とし、戻り値0を返して終了
-# 含まれていなければ失敗とし、戻り値1を返して終了
-# 結果ファイル($1にて渡される)からエスケープシーケンス文字を取り除き、/tmp/checkにリダイレクト保存する
 echo "=== 設問1"
 add_max 1
 if [ ! -f $EX1_FILE ]; then
@@ -44,8 +40,9 @@ if [ ! -f $EX1_FILE ]; then
     echo "NG"
     exit 1
 else
-    # /etc/passwdにて、nologinがシェルになっている行を抽出し、ASCIIコード順ソートの上位5つを取得する、その結果を作業用ファイル/tmp/check1に保存
-    grep nologin /etc/passwd | sort | head -n 5 > /tmp/check1
+    # /etc/passwdにて、nologinがシェルになっている行を抽出する
+
+    grep nologin /etc/passwd > /tmp/check1
     # 評価対象ファイル($EX1_FILE)の内容と比較し、同じであれば正解とする
     if cmp /tmp/check1 $EX1_FILE; then
         add_score 1
@@ -54,18 +51,17 @@ else
         add_score 0
         echo "NG"
     fi
-    rm -f /tmp/check1
 fi
 
 echo "=== 設問2"
 add_max 1
-if [ ! -f $EX2_FILE ]; then
+if [ ! -f $EX1_FILE ]; then
     add_score 0
     echo "NG"
     exit 1
 else
-    # ディレクトリ/usr/bin以下にあるファイルのうち、ファイルサイズの大きいもの10個を取得し、ファイルサイズ順(大→小)に並べ替えて、その結果を作業用ファイル/tmp/check2に保存
-    ls -l /usr/bin | sort -k5 -n -r | head -n 10 | awk '{print $9}'> /tmp/check2
+    # result2.txtからASCIIコード順ソートの上位5つを取得する、その結果を作業用ファイル/tmp/check2に保存
+    sort /tmp/check1| head -n 5 > /tmp/check2
     # 評価対象ファイル($EX2_FILE)の内容と比較し、同じであれば正解とする
     if cmp /tmp/check2 $EX2_FILE; then
         add_score 1
@@ -76,6 +72,25 @@ else
     fi
 fi
 
+echo "=== 設問3"
+add_max 2
+if [ ! -f $EX3_FILE ]; then
+    add_score 0
+    echo "NG"
+    exit 1
+else
+    # ディレクトリ/usr/bin以下にあるファイルのうち、ファイルサイズの大きいもの10個を取得し、ファイルサイズ順(大→小)に並べ替えて、その結果を作業用ファイル/tmp/check3に保存
+    ls -l /usr/bin | sort -k5 -n -r | head -n 10 | awk '{print $9}'> /tmp/check3
+    # 評価対象ファイル($EX2_FILE)の内容と比較し、同じであれば正解とする
+    if cmp /tmp/check3 $EX3_FILE; then
+        add_score 2
+        echo "OK"
+    else
+        add_score 0
+        echo "NG"
+    fi
+fi
+rm -f /tmp/check{1,2} /tmp/check3
 
 # ======================== ↑ 記述部ここまで
 

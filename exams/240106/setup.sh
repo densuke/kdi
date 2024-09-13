@@ -7,6 +7,7 @@
 # 評価時に使用するようなコードはここから記述してください
 EX1_FILE="result1.txt"
 EX2_FILE="result2.txt"
+EX3_FILE="result3.txt"
 
 # ↑ ここまで -----------------------------------
 
@@ -14,7 +15,8 @@ if [ $0 = $BASH_SOURCE ]; then
 # このスクリプトが直接実行された場合にはここから記述してください
 
   echo -n "" > $EX1_FILE
-  cat > $EX2_FILE <<EOM
+  echo -n "" > $EX2_FILE
+  cat > $EX3_FILE <<EOM
 # これはサンプルです、そのまま出しても点数になりません
 gp-display-text
 gp-display-html
