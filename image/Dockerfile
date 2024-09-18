@@ -34,8 +34,9 @@ ENV PATH=$PATH:/usr/games
 # binutilsをインストールする(strings)
 #RUN apt-get install -y binutils markdown
 COPY ./bin/exam /usr/local/bin/exam
+COPY ./bin/toi /usr/local/bin/toi
 COPY ./exams /usr/local/lib/exams
-RUN chmod +x /usr/local/bin/exam;  cd "/usr/local/lib/exams/"; ls -d [0-9]*
+RUN chmod +x /usr/local/bin/exam /usr/local/bin/toi;  cd "/usr/local/lib/exams/"; ls -d [0-9]*
 RUN find /usr/local/lib/exams -type f -iname "*.sh" -exec chmod -v +x {} \;
 COPY ./bin/answer /usr/local/bin/answer
 RUN chmod +x /usr/local/bin/answer

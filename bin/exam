@@ -30,6 +30,7 @@ do
 done
 shift `expr $OPTIND - 1`
 PROBLEM=$1
+export PROBLEM
 if [ -z "$PROBLEM" ]; then
   echo "問題番号が指定されていません"
   exit 1
@@ -40,6 +41,8 @@ fi
 PDIR=`printf "${DIR}/%04d" $PROBLEM`
 if [ ! -d "${PDIR}" ]; then
   echo "問題番号 $PROBLEM は存在しません"
+  echo "問題番号が間違っていないか、更新が正常に行われていない可能性があります"
+  echo "問題番号が間違っていないなら、もう一度 \`kadai update\` してみてください"
   exit 1
 fi
 
@@ -47,6 +50,8 @@ fi
 # 問題のテキストは、各問題ディレクトリ(PDIR)中にproblem.txtとして置かれているものとする
 echo "--- 問題番号 $PROBLEM ---"
 cat ${PDIR}/problem.txt
+echo "-----------------------"
+echo "問題がわからなくなったら、"toi"と入力してください(入力後Enter)。"
 echo "-----------------------"
 
 # 問題の前にセットアップ項目があれば実行する

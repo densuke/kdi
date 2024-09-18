@@ -1,0 +1,15 @@
+#!/bin/bash
+DIR=/usr/local/lib/exams
+
+# 問題番号を変数PROBLEMで受け取っているので、その番号のディレクトリにあるproblem.txtを表示する
+
+PDIR=$(printf "${DIR}/%04d" $PROBLEM)
+
+if [ ! -f "${PDIR}/problem.txt" ]; then
+  echo "問題番号 $PROBLEM は存在しません"
+  exit 1
+fi
+
+echo "=============================="
+cat $PDIR/problem.txt
+echo "=============================="
