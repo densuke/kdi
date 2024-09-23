@@ -5,9 +5,9 @@
 # * 評価時に事前データを読み込むためにinclude
 
 # 評価時に使用するようなコードはここから記述してください
-DEST1="e1"
-DEST2="e2/foobar"
-DEST3="e3"
+DEST1="ee1"
+DEST2="ee2/foobar"
+DEST3="ee3"
 DEST4="fuga/ok"
 # ↑ ここまで -----------------------------------
 
@@ -19,6 +19,6 @@ mkdir -p hoge
 echo hoge > hoge/foobar
 
 # DEST3分の初期状態
-mkdir -pv fuga/e3
+mkdir -pv fuga/ee3
 # ↑ ここまで -----------------------------------
 fi

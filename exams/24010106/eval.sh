@@ -61,7 +61,7 @@ if [ ! -f $EX1_FILE ]; then
     exit 1
 else
     # result2.txtからASCIIコード順ソートの上位5つを取得する、その結果を作業用ファイル/tmp/check2に保存
-    sort /tmp/check1| head -n 5 > /tmp/check2
+    sort -r /tmp/check1| head -n 5 > /tmp/check2
     # 評価対象ファイル($EX2_FILE)の内容と比較し、同じであれば正解とする
     if cmp /tmp/check2 $EX2_FILE; then
         add_score 1
