@@ -30,6 +30,13 @@ if [ ! -f $KNAME ]; then
   mkdir -p $(dirname $KNAME)/data
 fi
 
+# イメージが存在しない場合、pullする
+if ! podman image exists "${REPO}"; then
+  echo "問題システムのイメージが見つかりません、pullします"
+  podman image pull "${REPO}"
+fi
+
+
 # updateの場合は問題システムを更新する
 if [ "$1" = "update" ]; then
   echo "問題システムの更新チェックをしています(最新版があればpullします)"
