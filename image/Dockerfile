@@ -36,11 +36,14 @@ ENV PATH=$PATH:/usr/games
 COPY ./bin/exam /usr/local/bin/exam
 COPY ./bin/toi /usr/local/bin/toi
 # COPY ./exams /usr/local/lib/exams
-RUN --mount=type=bind,source=./exams,target=/tmp/exams \
-    cp -r /tmp/exams /usr/local/lib/; \
+RUN --mount=type=bind,source=./exams,target=/tmp/exams <<EOM
+    cp -r /tmp/exams /usr/local/lib/
     rm -rf /usr/local/lib/exams/*.notuse
-RUN chmod +x /usr/local/bin/exam /usr/local/bin/toi;  cd "/usr/local/lib/exams/"; ls -d [0-9]*
-RUN find /usr/local/lib/exams -type f -iname "*.sh" -exec chmod -v +x {} \;
+    chmod +x /usr/local/bin/exam /usr/local/bin/toi
+    cd "/usr/local/lib/exams/"
+    ls -d [0-9]*
+    find /usr/local/lib/exams -type f -iname "*.sh" -exec chmod -v +x {} \;
+EOM
 COPY ./bin/answer /usr/local/bin/answer
 RUN chmod +x /usr/local/bin/answer
 RUN rm -vf /home/ubuntu/.sudo_as_admin_successful
